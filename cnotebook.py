@@ -1,6 +1,6 @@
 import sys
 import abjad
-from alex.chord import *
+from pyalex.chord import *
 
 if len(sys.argv) < 3:
 	raise ValueError("Required parameters: notebook file path, mode")

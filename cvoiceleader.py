@@ -2,8 +2,8 @@ import math
 import sys
 import abjad
 import lxml.etree
-from alex.chord import *
-from alex.utilities import *
+from pyalex.chord import *
+from pyalex.utilities import *
 sys.path.append(".")
 
 def sort_and_trim_chords(chords, number):

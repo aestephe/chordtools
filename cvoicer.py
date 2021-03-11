@@ -2,9 +2,9 @@ import math
 import sys
 import abjad
 import lxml.etree
-from alex.chord import *
-from alex.utilities import *
-from alex.pitch import *
+from pyalex.chord import *
+from pyalex.utilities import *
+from pyalex.pitch import *
 
 def sort_and_trim_chords(chords, number):
 	return sorted(chords, key = lambda c: (-1 * c.get_midi_intervals().count(3), c.total_span(), c.interval_variety()))[:number]
