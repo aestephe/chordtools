@@ -7,7 +7,7 @@ from pyalex.utilities import *
 from pyalex.pitch import *
 
 def sort_and_trim_chords(chords, number):
-	return sorted(chords, key = lambda c: (-1 * c.get_midi_intervals().count(3), c.total_span(), c.interval_variety()))[:number]
+	return sorted(chords, key = lambda c: (c.total_span(), c.interval_variety()))[:number]
 
 if len(sys.argv) < 2:
 	raise ValueError("XML parameter filepath required")

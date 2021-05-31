@@ -7,7 +7,7 @@ from pyalex.utilities import *
 sys.path.append(".")
 
 def sort_and_trim_chords(chords, number):
-	return sorted(chords, key = lambda c: (-1 * c.get_midi_intervals().count(3), c.total_span(), c.interval_variety()))[:number]
+	return sorted(chords, key = lambda c: (c.total_span(), c.interval_variety()))[:number]
 
 def build_spectra_from_all_poss_common_tones(previous_chord, overtone_classes, lower_bound, upper_bound, pitch_quantization):
 	new_chords = []
