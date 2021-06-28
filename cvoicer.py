@@ -67,7 +67,7 @@ if len(nct_overtone_classes) > 0:
 	
 print("")
 print("Generating voicings...")
-chords = spectrum.get_unique_pc_voicings()
+chords = spectrum.get_unique_pc_voicings(force_fund_register)
 print(str(len(chords)) + " chords found")
 
 print("")
