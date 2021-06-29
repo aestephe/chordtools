@@ -64,6 +64,7 @@ mandatory_intervals = Utilities.string_to_list_of_float(
 					Utilities.get_param_val(xml_root, "mandatory_intervals"))
 banned_intervals = Utilities.string_to_list_of_float(
 					Utilities.get_param_val(xml_root, "banned_intervals"))
+mandatory_fundamental_pc = Utilities.string_to_list_of_float(Utilities.get_param_val(xml_root, "mandatory_fundamental_pc"))
 oclass_fit_in_octave = Utilities.string_to_list_of_float(
 						Utilities.get_param_val(xml_root, "oclass_fit_in_octave"))
 min_number_common_tones = int(Utilities.get_param_val(xml_root, "min_number_common_tones"))
@@ -75,6 +76,8 @@ nct_notehead_style = Utilities.get_param_val(xml_root, "nct_notehead_style")
 
 if min_number_common_tones < 1:
 	raise ValueError("the minimum desired number of common tones must be at least 1")
+if len(mandatory_fundamental_pc) > 1:
+	raise ValueErorr("cannot specify more than one mandatory fundamental pitch class")
 
 print("")
 print("Generating raw spectra from all possible common tones...")
@@ -134,6 +137,11 @@ for c in new_chords_exploded:
 			min([p.midi_number for p in c.pitches if p.overtone_class in oclass_fit_in_octave]) > 12):
 			should_include = False
 	
+	# Enforce the mandatory pitch class of the fundamental if one was provided
+	if len(mandatory_fundamental_pc) > 0:
+		if Utilities.get_numerical_pitch_class(c.fundamental.midi_number) != Utilities.get_numerical_pitch_class(mandatory_fundamental_pc[0]):
+			should_include = False
+
 	# Number of common tones should be within the min/max
 	if len(c.get_common_tones(previous_chord, count_ncts_as_common_tones)) < min_number_common_tones:
 		should_include = False
