@@ -9,7 +9,7 @@ sys.path.append(".")
 def sort_and_trim_chords(chords, number):
 	return sorted(chords, key = lambda c: (c.total_span(), c.interval_variety()))[:number]
 
-def build_spectra_from_all_poss_common_tones(previous_chord, overtone_classes, lower_bound, upper_bound, pitch_quantization):
+def build_spectra_from_all_poss_common_tones(previous_chord, overtone_classes, lower_bound, upper_bound, pitch_quantization, mandatory_fundamental_pc):
 	new_chords = []
 	# each pitch from the previous chord which is a harmonic tone could be a common tone with a new chord
 	for p in (p for p in previous_chord.pitches if p.is_harmonic_tone):
@@ -28,7 +28,8 @@ def build_spectra_from_all_poss_common_tones(previous_chord, overtone_classes, l
 				new_fund_midi = round(new_fund_midi * (1/pitch_quantization)) / (1/pitch_quantization)
 				if new_fund_midi >= lower_bound:
 					# don't bother building the chord if it duplicates the fundamental of the previous chord
-					if not Utilities.are_pcs_equal(new_fund_midi, previous_chord.fundamental.midi_number):
+					if ((len(mandatory_fundamental_pc) == 0) or 
+						(len(mandatory_fundamental_pc) > 0 and Utilities.get_numerical_pitch_class(new_fund_midi) in mandatory_fundamental_pc)):
 						new_fund_pitch = Pitch(new_fund_midi, 1)
 						chord = Chord.from_fund_and_overtone_classes(new_fund_pitch, overtone_classes, 
 																	lower_bound, upper_bound, pitch_quantization)
@@ -81,7 +82,7 @@ if len(mandatory_fundamental_pc) > 1:
 
 print("")
 print("Generating raw spectra from all possible common tones...")
-new_chords = build_spectra_from_all_poss_common_tones(previous_chord, overtone_classes, lower_bound, upper_bound, pitch_quantization)
+new_chords = build_spectra_from_all_poss_common_tones(previous_chord, overtone_classes, lower_bound, upper_bound, pitch_quantization, mandatory_fundamental_pc)
 print(str(len(new_chords)) + " spectra generated")
 #for c in new_chords:
 #	print(c.to_string())
