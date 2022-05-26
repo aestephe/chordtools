@@ -1,4 +1,5 @@
 import math
+import statistics
 import sys
 import abjad
 import lxml.etree
@@ -30,6 +31,10 @@ mandatory_pitches = Pitch.array_from_midi(Utilities.string_to_list_of_float(
 					Utilities.get_param_val(xml_root, "mandatory_pitches")))
 banned_pitches = Pitch.array_from_midi(Utilities.string_to_list_of_float(
 					Utilities.get_param_val(xml_root, "banned_pitches")))
+special_pitches = Pitch.array_from_midi(Utilities.string_to_list_of_float(
+					Utilities.get_param_val(xml_root, "special_pitches")))
+min_special_pitches_matches = float(Utilities.get_param_val(xml_root, "min_special_pitches_matches"))
+max_special_pitches_matches = float(Utilities.get_param_val(xml_root, "max_special_pitches_matches"))
 mandatory_intervals = Utilities.string_to_list_of_float(
 					Utilities.get_param_val(xml_root, "mandatory_intervals"))
 banned_intervals = Utilities.string_to_list_of_float(
@@ -73,6 +78,8 @@ print(str(len(chords)) + " chords found")
 print("")
 print("Applying filtering conditions...")
 filtered_chords = []
+
+special_midi = [q.midi_number for q in special_pitches]
 for c in chords:
 
 	should_include = True
@@ -96,6 +103,11 @@ for c in chords:
 	# No banned intervals should be present
 	if len(banned_intervals) > 0 and  c.contains_any_intervals(banned_intervals):
 		should_include = False
+
+	if len(special_pitches) > 0:
+		number_of_matches = len([p for p in c.pitches if p.midi_number in special_midi])
+		if number_of_matches < min_special_pitches_matches or number_of_matches > max_special_pitches_matches:
+			should_include = False
 
 	# Enforce overtone classes which need to be voiced within an octave of each other
 	if len(oclass_fit_in_octave) > 0: 
